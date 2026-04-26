@@ -14,10 +14,6 @@ COPY package.json pnpm-lock.yaml* ./
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the code and build
-COPY . .
-RUN pnpm build
-
 # --- STAGE 2: Production Stage ---
 FROM node:20-slim AS runner
 
