@@ -1,0 +1,11 @@
+services:
+  bookish-tribble:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bookish_tribble_app
+    ports:
+      - "3001:3001"
+    restart: always
+    environment:
+      - NODE_ENV=production
