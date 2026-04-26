@@ -1,13 +1,20 @@
-const express = require("express");
+// server.js
+const express = require('express');
+const path = require('path');
 const app = express();
-const port = 3001;
+const PORT = 3001;
 
-app.use(express.static("public"))
+// Point this to the folder your build process creates (e.g., 'dist' or 'build')
+const STATIC_PATH = path.join(__dirname, 'dist');
 
-app.get("/app", (req, res) => {
-    res.send('Hello World');
-})
+app.use(express.static(STATIC_PATH));
 
-app.listen(port, () => {
-    console.log(`Your server is running at port ...${port}`);
+// Handle SPA routing (Redirect all requests to index.html)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(STATIC_PATH, 'index.html'));
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
+  console.log(`Serving static files from: ${STATIC_PATH}`);
 });
