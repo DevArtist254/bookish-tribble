@@ -24,7 +24,6 @@ FROM node:20-slim AS runner
 ENV NODE_ENV=production
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corego enable
 
 WORKDIR /app
 
