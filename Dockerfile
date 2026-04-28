@@ -1,41 +1,14 @@
 # --- STAGE 1: Build Stage ---
-FROM node:20-slim AS builder
+FROM node:22-slim 
 
-# Install pnpm
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN npm install -g pnpm@latest-10
 
-WORKDIR /app
+# Copy dependency files first for better caching
+COPY package*.json ./
 
-# Copy dependency files first (for better caching)
-COPY package.json pnpm-lock.yaml* ./
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# --- STAGE 2: Production Stage ---
-FROM node:20-slim AS runner
-
-ENV NODE_ENV=production
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-
-WORKDIR /app
-
-# Install only production dependencies for the Express server
-COPY package.json pnpm-lock.yaml* ./
-RUN corepack enable && pnpm install --prod --frozen-lockfile
-
-# Copy the built static files from the builder stage
-# NOTE: Change 'dist' to 'build' if your project uses a different output folder
-COPY --from=builder /app/dist ./dist
-
-# Copy the server.js we created above
-COPY server.js ./
-
-# Expose the requested port
-EXpose 3001
+RUN pnpm install
+# Copy the rest of the application
+COPY . .
 
 # Start the Express server
 CMD ["node", "server.js"]
